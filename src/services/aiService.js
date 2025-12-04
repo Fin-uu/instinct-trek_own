@@ -1,22 +1,14 @@
 // src/services/aiService.js
 // AI API 服務 - 連接到後端 vLLM
 
-// 使用相對路徑，透過 Vite 開發代理轉發到後端
-const API_BASE_URL = '';
+const API_BASE_URL = 'http://localhost:3000';
 
 /**
  * 測試 API 連接
  */
 export const testConnection = async () => {
   try {
-    const response = await fetch(`/health`);
-    if (!response.ok) {
-      return { success: false, error: `HTTP ${response.status}` };
-    }
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      return { success: false, error: 'Non-JSON response from /health' };
-    }
+    const response = await fetch(`${API_BASE_URL}/health`);
     const data = await response.json();
     return { success: true, data };
   } catch (error) {
@@ -30,14 +22,7 @@ export const testConnection = async () => {
  */
 export const testVLLM = async () => {
   try {
-    const response = await fetch(`/api/test-vllm`);
-    if (!response.ok) {
-      return { success: false, error: `HTTP ${response.status}` };
-    }
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      return { success: false, error: 'Non-JSON response from /api/test-vllm' };
-    }
+    const response = await fetch(`${API_BASE_URL}/api/test-vllm`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -53,9 +38,7 @@ export const testVLLM = async () => {
  */
 export const sendMessage = async (message, history = []) => {
   try {
-    console.log('🔵 [aiService] Sending message:', message);
-    
-    const response = await fetch(`/api/chat`, {
+    const response = await fetch(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -66,23 +49,15 @@ export const sendMessage = async (message, history = []) => {
       })
     });
 
-    console.log('🔵 [aiService] Response status:', response.status);
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('🔵 [aiService] Response data:', {
-      success: data.success,
-      contentLength: data.content?.length,
-      contentPreview: data.content?.substring(0, 100)
-    });
-    
     return data;
 
   } catch (error) {
-    console.error('❌ [aiService] 發送訊息失敗:', error);
+    console.error('發送訊息失敗:', error);
     return {
       success: false,
       error: error.message
@@ -163,7 +138,7 @@ export const sendMessageStream = async (message, history = [], onChunk) => {
  */
 export const generateItinerary = async (destination, days, preferences = {}) => {
   try {
-    const response = await fetch(`/api/generate-itinerary`, {
+    const response = await fetch(`${API_BASE_URL}/api/generate-itinerary`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -222,13 +197,44 @@ export const extractDestination = (input) => {
  * @param {string} input - 用戶輸入
  */
 export const extractDays = (input) => {
-  // 匹配 "X天" 或 "X日"
-  const match = input.match(/(\d+)\s*[天日]/);
-  if (match) {
-    return parseInt(match[1]);
+  // 中文數字對應表
+  const chineseNumbers = {
+    '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
+    '六': 6, '七': 7, '八': 8, '九': 9, '十': 10,
+    '兩': 2, '倆': 2
+  };
+  
+  // 1. 匹配阿拉伯數字 "3天" "5日"
+  const arabicMatch = input.match(/(\d+)\s*[天日]/);
+  if (arabicMatch) {
+    return parseInt(arabicMatch[1]);
+  }
+  
+  // 2. 匹配 "X天Y夜" 格式（取天數）
+  const dayNightMatch = input.match(/([一二三四五六七八九十兩倆\d]+)\s*天\s*([一二三四五六七八九十兩倆\d]+)\s*夜/);
+  if (dayNightMatch) {
+    const dayPart = dayNightMatch[1];
+    // 嘗試解析為數字
+    if (/^\d+$/.test(dayPart)) {
+      return parseInt(dayPart);
+    }
+    // 嘗試中文數字
+    if (chineseNumbers[dayPart]) {
+      return chineseNumbers[dayPart];
+    }
+  }
+  
+  // 3. 匹配中文數字 "三天" "五日"
+  const chineseMatch = input.match(/([一二三四五六七八九十兩倆]+)\s*[天日]/);
+  if (chineseMatch) {
+    const chineseNum = chineseMatch[1];
+    if (chineseNumbers[chineseNum]) {
+      return chineseNumbers[chineseNum];
+    }
   }
 
   // 預設 3 天
+  console.log('⚠️ 無法提取天數，使用預設值 3 天');
   return 3;
 };
 
@@ -237,12 +243,22 @@ export const extractDays = (input) => {
  * @param {string} input - 用戶輸入
  */
 export const shouldGenerateItinerary = (input) => {
-  const keywords = [
+  const lowerInput = input.toLowerCase();
+  
+  // 中文關鍵字
+  const chineseKeywords = [
     '天', '日', '行程', '旅遊', '規劃', '安排',
     '去', '玩', '遊', '景點', '推薦'
   ];
-
-  return keywords.some(keyword => input.includes(keyword));
+  
+  // 英文關鍵字
+  const englishKeywords = [
+    'day', 'days', 'trip', 'travel', 'itinerary', 'plan',
+    'visit', 'tour', 'recommend', 'attraction', 'schedule'
+  ];
+  
+  return chineseKeywords.some(keyword => input.includes(keyword)) ||
+         englishKeywords.some(keyword => lowerInput.includes(keyword));
 };
 
 /**
@@ -252,14 +268,6 @@ export const shouldGenerateItinerary = (input) => {
 export const buildHistory = (messages) => {
   return messages
     .filter(msg => msg.type === 'user' || msg.type === 'assistant')
-    .filter(msg => {
-      // 過濾掉驚嘆號錯誤訊息（vLLM encoding issue）
-      if (msg.type === 'assistant') {
-        const isExclamationError = msg.content.trim().match(/^!+$/);
-        return !isExclamationError;
-      }
-      return true;
-    })
     .map(msg => ({
       role: msg.type === 'user' ? 'user' : 'assistant',
       content: msg.content

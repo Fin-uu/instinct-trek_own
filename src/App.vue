@@ -62,6 +62,7 @@
           v-else-if="currentPage === 'itinerary'"
           @view-detail="handleViewItineraryDetail"
         />
+        
 
         <!-- 行程詳細頁 -->
         <ItineraryDetailPage
@@ -83,12 +84,14 @@
       <!-- 底部輸入區（僅在聊天頁顯示） -->
       <footer v-if="currentPage === 'chat'" class="app-footer">
         <div class="footer-content">
-          <!-- Language Warning Banner -->
-          <div class="language-warning">
-            <span class="warning-icon">⚠️</span>
-            <span class="warning-text">
-              <strong>English Only:</strong> Please ask in English. Chinese input causes errors due to server encoding issues.
-            </span>
+          <!-- 載入指示器 -->
+          <div v-if="isLoading" class="loading-indicator">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <p>AI 正在思考中...</p>
           </div>
 
           <div v-if="selectedImage" class="selected-image">
@@ -112,7 +115,7 @@
               type="text"
               v-model="inputValue"
               @keypress.enter="handleSendMessage"
-              placeholder="Ask in English (e.g., 'What to visit in Taipei?')"
+              placeholder="請輸入您的問題（例如：台北有什麼好玩的？）"
               class="text-input"
             />
 
@@ -121,7 +124,7 @@
             </button>
           </div>
 
-          <p class="footer-hint">⚠️ Please ask in English only (Chinese not supported by AI model)</p>
+          <p class="footer-hint">💬 請隨時詢問旅遊相關問題</p>
         </div>
       </footer>
     </div>
@@ -158,7 +161,7 @@ const isLoading = ref(false);
 const messages = ref([
   {
     type: 'assistant',
-    content: 'Hello! I am TravelMate, your AI travel guide.',
+    content: '您好！我是 TravelMate，您的 AI 旅遊助手。',
     timestamp: new Date()
   }
 ]);
@@ -213,13 +216,6 @@ const handleSendMessage = async () => {
   if (!inputValue.value.trim() && !selectedImage.value) return;
 
   const userInput = inputValue.value;
-  
-  // Check for Chinese characters
-  const hasChinese = /[\u4e00-\u9fff]/.test(userInput);
-  if (hasChinese) {
-    alert('⚠️ Please use English only!\n\nThe AI model has encoding issues with Chinese characters.\n\nExample: Instead of "台北哪裡好玩", ask "What to visit in Taipei?"');
-    return;
-  }
   
   // 添加用戶訊息
   messages.value.push({
@@ -495,6 +491,63 @@ const handleModifyItinerary = (itinerary) => {
 .footer-content {
   max-width: 1000px;
   margin: 0 auto;
+}
+
+/* 載入指示器 */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 0.75rem;
+  border: 1px solid #3b82f6;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.typing-dots span {
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+.loading-indicator p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #1e40af;
+  font-weight: 500;
 }
 
 .selected-image {
