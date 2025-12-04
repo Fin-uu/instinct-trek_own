@@ -1,0 +1,22 @@
+{
+  "name": "ai-travel-guide-backend",
+  "version": "1.0.0",
+  "description": "AI 智慧導遊後端 API",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["ai", "travel", "vllm", "openai"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "openai": "^4.20.1",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

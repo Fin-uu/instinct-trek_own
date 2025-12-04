@@ -56,13 +56,13 @@
           @remove-image="selectedImage = null"
           @view-itinerary="handleViewItinerary"
         />
-        
+
         <!-- 行程列表頁 -->
-        <ItineraryPage 
+        <ItineraryPage
           v-else-if="currentPage === 'itinerary'"
           @view-detail="handleViewItineraryDetail"
         />
-        
+
         <!-- 行程詳細頁 -->
         <ItineraryDetailPage
           v-else-if="currentPage === 'itinerary-detail'"
@@ -71,7 +71,7 @@
           @start-navigation="handleStartNavigation"
           @modify="handleModifyItinerary"
         />
-        
+
         <!-- 設定頁 -->
         <SettingsPage
           v-else-if="currentPage === 'settings'"
@@ -83,11 +83,19 @@
       <!-- 底部輸入區（僅在聊天頁顯示） -->
       <footer v-if="currentPage === 'chat'" class="app-footer">
         <div class="footer-content">
+          <!-- Language Warning Banner -->
+          <div class="language-warning">
+            <span class="warning-icon">⚠️</span>
+            <span class="warning-text">
+              <strong>English Only:</strong> Please ask in English. Chinese input causes errors due to server encoding issues.
+            </span>
+          </div>
+
           <div v-if="selectedImage" class="selected-image">
             <img :src="selectedImage" alt="Selected" />
             <button @click="selectedImage = null" class="remove-image">×</button>
           </div>
-          
+
           <div class="input-area">
             <input
               type="file"
@@ -99,21 +107,21 @@
             <button @click="$refs.fileInput.click()" class="icon-btn">
               <CameraIcon :size="22" />
             </button>
-            
+
             <input
               type="text"
               v-model="inputValue"
               @keypress.enter="handleSendMessage"
-              placeholder="例如：我想去台南吃小吃，不要排隊"
+              placeholder="Ask in English (e.g., 'What to visit in Taipei?')"
               class="text-input"
             />
-            
+
             <button @click="handleSendMessage" class="send-btn">
               <SendIcon :size="22" />
             </button>
           </div>
-          
-          <p class="footer-hint">💡 可上傳照片進行翻譯或辨識</p>
+
+          <p class="footer-hint">⚠️ Please ask in English only (Chinese not supported by AI model)</p>
         </div>
       </footer>
     </div>
@@ -136,6 +144,7 @@ import WeatherAlert from './components/WeatherAlert.vue';
 import ItineraryPage from './components/ItineraryPage.vue';
 import ItineraryDetailPage from './components/ItineraryDetailPage.vue';
 import SettingsPage from './components/SettingsPage.vue';
+import * as aiService from './services/aiService';
 
 const currentPage = ref('home');
 const inputValue = ref('');
@@ -143,11 +152,13 @@ const selectedImage = ref(null);
 const showAlert = ref(false);
 const fileInput = ref(null);
 const selectedItineraryId = ref(null);
+const isConnected = ref(false);
+const isLoading = ref(false);
 
 const messages = ref([
   {
     type: 'assistant',
-    content: '您好！我是您的 AI 智慧導遊助手。我可以幫您規劃行程、提供天氣警報、推薦景點。請告訴我您想去哪裡？',
+    content: 'Hello! I am TravelMate, your AI travel guide.',
     timestamp: new Date()
   }
 ]);
@@ -163,7 +174,26 @@ const userPreferences = ref({
   }
 });
 
-onMounted(() => {
+onMounted(async () => {
+  // 測試 API 連接
+  const result = await aiService.testConnection();
+  if (result.success) {
+    console.log('✅ 後端連接成功');
+    isConnected.value = true;
+    
+    // 測試 vLLM
+    const vllmTest = await aiService.testVLLM();
+    if (vllmTest.success) {
+      console.log('✅ vLLM 連接成功:', vllmTest.response);
+    } else {
+      console.warn('⚠️ vLLM 連接失敗:', vllmTest.error);
+    }
+  } else {
+    console.error('❌ 後端連接失敗:', result.error);
+    isConnected.value = false;
+  }
+
+  // 原有的天氣警報邏輯
   setTimeout(() => {
     if (currentPage.value === 'chat') {
       showAlert.value = true;
@@ -179,50 +209,127 @@ const handleStartChat = (topic) => {
   }
 };
 
-const handleSendMessage = () => {
+const handleSendMessage = async () => {
   if (!inputValue.value.trim() && !selectedImage.value) return;
 
-  const newMessage = {
+  const userInput = inputValue.value;
+  
+  // Check for Chinese characters
+  const hasChinese = /[\u4e00-\u9fff]/.test(userInput);
+  if (hasChinese) {
+    alert('⚠️ Please use English only!\n\nThe AI model has encoding issues with Chinese characters.\n\nExample: Instead of "台北哪裡好玩", ask "What to visit in Taipei?"');
+    return;
+  }
+  
+  // 添加用戶訊息
+  messages.value.push({
     type: 'user',
-    content: inputValue.value,
+    content: userInput,
     image: selectedImage.value,
     timestamp: new Date()
-  };
+  });
 
-  messages.value.push(newMessage);
-  const userInput = inputValue.value;
   inputValue.value = '';
   selectedImage.value = null;
+  isLoading.value = true;
 
-  setTimeout(() => {
+  try {
+    // 檢查連接
+      if (!isConnected.value) {
+        throw new Error('Not connected to backend server');
+      }    // 構建對話歷史
+    const history = aiService.buildHistory(messages.value.slice(0, -1));
+
+    // 呼叫 AI API
+    const response = await aiService.sendMessage(userInput, history);
+
+    if (response.success) {
+      // 檢查回覆是否是驚嘆號錯誤（vLLM encoding issue）
+      const isExclamationError = response.content.trim().match(/^!+$/);
+      
+      if (isExclamationError) {
+        // 顯示錯誤訊息而不是驚嘆號
+        messages.value.push({
+          type: 'assistant',
+          content: '⚠️ Sorry, the AI model encountered an encoding error. Please try rephrasing your question or refresh the page to start a new conversation.',
+          timestamp: new Date()
+        });
+      } else {
+        // 添加正常的 AI 回應
+        messages.value.push({
+          type: 'assistant',
+          content: response.content,
+          timestamp: new Date()
+        });
+
+        // 檢查是否需要生成行程
+        if (aiService.shouldGenerateItinerary(userInput)) {
+          await handleGenerateItinerary(userInput);
+        }
+      }
+    } else {
+      throw new Error(response.error);
+    }
+
+  } catch (error) {
+    console.error('❌ 發送訊息錯誤:', error);
     messages.value.push({
       type: 'assistant',
-      content: '好的！正在為您規劃行程...',
+      content: `抱歉，我現在無法回應。錯誤：${error.message}`,
+      timestamp: new Date()
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const handleGenerateItinerary = async (userInput) => {
+  try {
+    // 從用戶輸入提取資訊
+    const destination = aiService.extractDestination(userInput);
+    const days = aiService.extractDays(userInput);
+
+    if (!destination) {
+      console.log('未檢測到目的地，跳過行程生成');
+      return;
+    }
+
+    console.log(`🗺️ 生成行程: ${destination} ${days}天`);
+
+    // 顯示載入訊息
+    messages.value.push({
+      type: 'assistant',
+      content: `正在為您規劃${destination}${days}天的行程...`,
       timestamp: new Date()
     });
 
-    setTimeout(() => {
+    // 呼叫行程生成 API
+    const response = await aiService.generateItinerary(
+      destination,
+      days,
+      userPreferences.value
+    );
+
+    if (response.success) {
+      // 添加行程卡片
       messages.value.push({
         type: 'itinerary',
-        data: {
-          title: generateItineraryTitle(userInput),
-          style: '精選推薦',
-          crowd: '避開熱門時段',
-          budget: '中等消費',
-          steps: '每日約8,000步',
-          highlights: '清水寺、金閣寺、伏見稻荷、嵐山竹林...'
-        },
+        data: response.itinerary,
         timestamp: new Date()
       });
-    }, 1500);
-  }, 1000);
-};
+      console.log('✅ 行程生成成功');
+    } else {
+      throw new Error(response.error);
+    }
 
-const generateItineraryTitle = (input) => {
-  if (input.includes('京都')) return '京都三日古蹟巡禮';
-  if (input.includes('台南')) return '台南美食一日遊';
-  if (input.includes('東京')) return '東京購物之旅';
-  return '精選旅遊行程';
+  } catch (error) {
+    console.error('❌ 行程生成錯誤:', error);
+    messages.value.push({
+      type: 'assistant',
+      content: `抱歉，無法生成行程。錯誤：${error.message}`,
+      timestamp: new Date()
+    });
+  }
 };
 
 const handleImageUpload = (event) => {
@@ -483,6 +590,44 @@ const handleModifyItinerary = (itinerary) => {
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
+/* Language Warning Banner */
+.language-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 0.75rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.warning-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.warning-text {
+  font-size: 0.875rem;
+  color: #92400e;
+  line-height: 1.4;
+}
+
+.warning-text strong {
+  color: #78350f;
+  font-weight: 600;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+  }
+}
+
 .footer-hint {
   text-align: center;
   font-size: 0.75rem;
@@ -496,11 +641,11 @@ const handleModifyItinerary = (itinerary) => {
   .header-content {
     gap: 0.5rem;
   }
-  
+
   .header-title h1 {
     font-size: 1rem;
   }
-  
+
   .header-title p {
     display: none;
   }

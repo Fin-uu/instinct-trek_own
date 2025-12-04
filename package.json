@@ -1,6 +1,7 @@
 {
     "name": "instinct-trek-vue",
     "version": "0.1.0",
+    "type": "module",
     "private": true,
     "scripts": {
         "dev": "vite",
@@ -8,7 +9,10 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^5.2.1",
         "lucide-vue-next": "^0.555.0",
+        "openai": "^6.9.1",
         "vue": "^3.3.4"
     },
     "devDependencies": {
