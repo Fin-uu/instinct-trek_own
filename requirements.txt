@@ -1,0 +1,8 @@
+# requirements.txt
+# Populate this file with the project's pinned dependencies.
+# To auto-generate from the active venv run:
+#   .\.venv\Scripts\python -m pip freeze > requirements.txt
+
+# Example entries (uncomment and edit as needed):
+# requests==2.31.0
+# flask==2.3.3
