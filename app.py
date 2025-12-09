@@ -19,7 +19,7 @@ st.markdown("""
 st.divider()
 
 # === 功能介紹 ===
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.markdown("""
@@ -32,6 +32,15 @@ with col1:
 
 with col2:
     st.markdown("""
+    <div style='text-align: center; padding: 30px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 15px; color: white;'>
+        <div style='font-size: 50px; margin-bottom: 15px;'>❓</div>
+        <h3>旅遊問答</h3>
+        <p>即時解答疑問<br>景點美食資訊</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
     <div style='text-align: center; padding: 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 15px; color: white;'>
         <div style='font-size: 50px; margin-bottom: 15px;'>📋</div>
         <h3>我的行程</h3>
@@ -39,9 +48,9 @@ with col2:
     </div>
     """, unsafe_allow_html=True)
 
-with col3:
+with col4:
     st.markdown("""
-    <div style='text-align: center; padding: 30px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 15px; color: white;'>
+    <div style='text-align: center; padding: 30px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 15px; color: white;'>
         <div style='font-size: 50px; margin-bottom: 15px;'>⚡</div>
         <h3>即時提醒</h3>
         <p>天氣、人潮、預算<br>即時智能提醒</p>
@@ -57,11 +66,12 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.info("""
-    **三步驟規劃您的旅程：**
+    **四步驟規劃您的旅程：**
     
-    1️⃣ 點擊左側「💬 對話助手」開始對話  
-    2️⃣ 告訴我目的地和天數，AI 自動生成行程  
-    3️⃣ 在「📋 我的行程」查看和管理您的旅遊計畫
+    1️⃣ 點擊「💬 規劃行程」智能生成完整旅遊計畫  
+    2️⃣ 使用「❓ 旅遊問答」詢問景點美食交通資訊  
+    3️⃣ 在「📋 我的行程」管理和追蹤您的旅程  
+    4️⃣ 透過「⚡ 即時提醒」掌握天氣人潮預算
     """)
 
 with col2:
@@ -78,17 +88,21 @@ st.divider()
 # === 快速連結 ===
 st.markdown("### 🔗 快速進入")
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    if st.button("💬 開始對話", use_container_width=True, type="primary"):
+    if st.button("💬 規劃行程", use_container_width=True, type="primary"):
         st.switch_page("pages/chat.py")
 
 with col2:
-    if st.button("📋 查看行程", use_container_width=True):
-        st.switch_page("pages/Mytrip.py")
+    if st.button("❓ 旅遊問答", use_container_width=True):
+        st.switch_page("pages/Ask.py")
 
 with col3:
+    if st.button("📋 我的行程", use_container_width=True):
+        st.switch_page("pages/Mytrip.py")
+
+with col4:
     if st.button("⚡ 即時提醒", use_container_width=True):
         st.switch_page("pages/Alerts.py")
 
