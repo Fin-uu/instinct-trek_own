@@ -1,0 +1,582 @@
+{
+  "台北": {
+    "3天": {
+      "trip_name": "台北經典3日遊",
+      "location": "台北",
+      "duration": 3,
+      "total_budget": 15000,
+      "budget_breakdown": {
+        "accommodation": 4500,
+        "food": 4500,
+        "transport": 3000,
+        "activities": 3000
+      },
+      "daily_itinerary": [
+        {
+          "day": 1,
+          "theme": "都會地標巡禮",
+          "activities": [
+            {
+              "time": "09:00",
+              "name": "台北101觀景台",
+              "type": "景點",
+              "location": "信義區",
+              "duration": "2小時",
+              "cost": 600,
+              "note": "建議早上前往避開人潮，天氣好時視野極佳",
+              "icon": "🏢"
+            },
+            {
+              "time": "11:30",
+              "name": "鼎泰豐信義店",
+              "type": "美食",
+              "location": "信義區",
+              "duration": "1.5小時",
+              "cost": 500,
+              "note": "世界知名小籠包，建議提前線上訂位",
+              "icon": "🥟"
+            },
+            {
+              "time": "14:00",
+              "name": "國父紀念館",
+              "type": "景點",
+              "location": "信義區",
+              "duration": "1小時",
+              "cost": 0,
+              "note": "整點衛兵交接儀式，可拍攝101",
+              "icon": "🏛️"
+            },
+            {
+              "time": "16:00",
+              "name": "誠品信義旗艦店",
+              "type": "購物",
+              "location": "信義區",
+              "duration": "2小時",
+              "cost": 300,
+              "note": "24小時書店，文青必訪",
+              "icon": "📚"
+            },
+            {
+              "time": "19:00",
+              "name": "饒河街夜市",
+              "type": "美食",
+              "location": "松山區",
+              "duration": "2小時",
+              "cost": 400,
+              "note": "必吃藥膳排骨、胡椒餅，記得空腹前往",
+              "icon": "🌙"
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "theme": "文化與自然體驗",
+          "activities": [
+            {
+              "time": "08:30",
+              "name": "阜杭豆漿",
+              "type": "美食",
+              "location": "中正區",
+              "duration": "1小時",
+              "cost": 150,
+              "note": "台北早餐名店，週一公休，需排隊",
+              "icon": "🥛"
+            },
+            {
+              "time": "10:00",
+              "name": "故宮博物院",
+              "type": "景點",
+              "location": "士林區",
+              "duration": "3小時",
+              "cost": 350,
+              "note": "世界四大博物館之一，必看翠玉白菜、肉形石",
+              "icon": "🏛️"
+            },
+            {
+              "time": "13:30",
+              "name": "士林官邸",
+              "type": "景點",
+              "location": "士林區",
+              "duration": "1.5小時",
+              "cost": 100,
+              "note": "蔣中正故居，花園景色優美",
+              "icon": "🏡"
+            },
+            {
+              "time": "16:00",
+              "name": "陽明山國家公園",
+              "type": "景點",
+              "location": "北投區",
+              "duration": "2小時",
+              "cost": 0,
+              "note": "擎天崗草原、小油坑地熱，春季賞花",
+              "icon": "🌳"
+            },
+            {
+              "time": "19:00",
+              "name": "士林夜市",
+              "type": "美食",
+              "location": "士林區",
+              "duration": "2小時",
+              "cost": 500,
+              "note": "台北最大夜市，必吃豪大大雞排、蚵仔煎",
+              "icon": "🌙"
+            }
+          ]
+        },
+        {
+          "day": 3,
+          "theme": "老街與購物",
+          "activities": [
+            {
+              "time": "09:00",
+              "name": "九份老街",
+              "type": "景點",
+              "location": "新北瑞芳",
+              "duration": "3小時",
+              "cost": 200,
+              "note": "宮崎駿神隱少女場景，建議平日前往",
+              "icon": "🏘️"
+            },
+            {
+              "time": "13:00",
+              "name": "金瓜石黃金博物館",
+              "type": "景點",
+              "location": "新北瑞芳",
+              "duration": "2小時",
+              "cost": 80,
+              "note": "可摸220公斤金磚，礦業文化體驗",
+              "icon": "⛏️"
+            },
+            {
+              "time": "16:00",
+              "name": "西門町商圈",
+              "type": "購物",
+              "location": "萬華區",
+              "duration": "2小時",
+              "cost": 500,
+              "note": "年輕人潮流聖地，街頭藝人表演",
+              "icon": "🛍️"
+            },
+            {
+              "time": "18:30",
+              "name": "寧夏夜市",
+              "type": "美食",
+              "location": "大同區",
+              "duration": "1.5小時",
+              "cost": 300,
+              "note": "在地人最愛，必吃豬肝湯、蚵仔煎",
+              "icon": "🌙"
+            }
+          ]
+        }
+      ],
+      "accommodation_suggestions": [
+        {
+          "name": "捷絲旅台北西門館",
+          "type": "商務旅館",
+          "area": "西門町",
+          "price_range": "NT$ 2,000-2,800/晚",
+          "reason": "地點絕佳，近捷運西門站，房間乾淨現代"
+        },
+        {
+          "name": "台北君悅酒店",
+          "type": "五星飯店",
+          "area": "信義區",
+          "price_range": "NT$ 6,000-10,000/晚",
+          "reason": "豪華住宿，鄰近101，服務一流"
+        },
+        {
+          "name": "Meander 1948",
+          "type": "青年旅館",
+          "area": "中山區",
+          "price_range": "NT$ 800-1,200/床位",
+          "reason": "背包客首選，設計感強，交誼廳可認識朋友"
+        }
+      ],
+      "transport_tips": "建議購買悠遊卡，搭乘捷運、公車享8折優惠。台北101到故宮可搭捷運轉公車。九份建議搭台鐵到瑞芳再轉公車。",
+      "packing_list": [
+        "悠遊卡或一卡通",
+        "雨具（台北常下雨）",
+        "防曬用品",
+        "舒適步鞋",
+        "外套（室內冷氣強）",
+        "充電器、行動電源"
+      ],
+      "important_notes": [
+        "夜市建議空腹前往，可多嚐試不同�攤位",
+        "故宮週一休館，請避開",
+        "九份平日人較少，體驗更好",
+        "台北夏季炎熱多雨，務必攜帶雨具",
+        "捷運禁止飲食，違者罰款",
+        "許多餐廳需提前訂位"
+      ]
+    }
+  },
+  
+  "台南": {
+    "3天": {
+      "trip_name": "台南美食文化3日遊",
+      "location": "台南",
+      "duration": 3,
+      "total_budget": 12000,
+      "budget_breakdown": {
+        "accommodation": 3600,
+        "food": 4800,
+        "transport": 1800,
+        "activities": 1800
+      },
+      "daily_itinerary": [
+        {
+          "day": 1,
+          "theme": "府城美食巡禮",
+          "activities": [
+            {
+              "time": "06:30",
+              "name": "文章牛肉湯",
+              "type": "美食",
+              "location": "中西區",
+              "duration": "0.5小時",
+              "cost": 150,
+              "note": "凌晨營業的溫體牛肉湯，早上最新鮮",
+              "icon": "🍲"
+            },
+            {
+              "time": "08:00",
+              "name": "赤崁樓",
+              "type": "景點",
+              "location": "中西區",
+              "duration": "1小時",
+              "cost": 50,
+              "note": "台南代表性古蹟，荷蘭人建造",
+              "icon": "🏯"
+            },
+            {
+              "time": "10:00",
+              "name": "國華街美食",
+              "type": "美食",
+              "location": "中西區",
+              "duration": "2小時",
+              "cost": 300,
+              "note": "小吃一條街：富盛號碗粿、邱家小卷米粉",
+              "icon": "🍜"
+            },
+            {
+              "time": "14:00",
+              "name": "安平古堡",
+              "type": "景點",
+              "location": "安平區",
+              "duration": "1.5小時",
+              "cost": 70,
+              "note": "台灣最古老城堡，登頂可眺望安平港",
+              "icon": "🏰"
+            },
+            {
+              "time": "16:00",
+              "name": "安平樹屋",
+              "type": "景點",
+              "location": "安平區",
+              "duration": "1小時",
+              "cost": 50,
+              "note": "榕樹與建築共生，IG打卡熱點",
+              "icon": "🌳"
+            },
+            {
+              "time": "18:00",
+              "name": "周氏蝦捲",
+              "type": "美食",
+              "location": "安平區",
+              "duration": "1小時",
+              "cost": 200,
+              "note": "安平必吃蝦捲，現炸酥脆",
+              "icon": "🦐"
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "theme": "歷史文化深度遊",
+          "activities": [
+            {
+              "time": "08:00",
+              "name": "阿堂鹹粥",
+              "type": "美食",
+              "location": "中西區",
+              "duration": "0.5小時",
+              "cost": 100,
+              "note": "虱目魚粥名店，只營業到中午",
+              "icon": "🥣"
+            },
+            {
+              "time": "09:30",
+              "name": "孔廟",
+              "type": "景點",
+              "location": "中西區",
+              "duration": "1.5小時",
+              "cost": 50,
+              "note": "台灣第一座孔廟，全台首學",
+              "icon": "🏛️"
+            },
+            {
+              "time": "12:00",
+              "name": "度小月擔仔麵",
+              "type": "美食",
+              "location": "中西區",
+              "duration": "1小時",
+              "cost": 150,
+              "note": "百年老店，蝦仁肉燥必點",
+              "icon": "🍜"
+            },
+            {
+              "time": "14:00",
+              "name": "神農街",
+              "type": "景點",
+              "location": "中西區",
+              "duration": "1.5小時",
+              "cost": 0,
+              "note": "老街風情，文創小店，傍晚燈籠點亮最美",
+              "icon": "🏘️"
+            },
+            {
+              "time": "17:00",
+              "name": "花園夜市",
+              "type": "美食",
+              "location": "北區",
+              "duration": "2.5小時",
+              "cost": 400,
+              "note": "南台灣最大夜市，週四六日營業",
+              "icon": "🌙"
+            }
+          ]
+        },
+        {
+          "day": 3,
+          "theme": "鹽田風光與伴手禮",
+          "activities": [
+            {
+              "time": "09:00",
+              "name": "七股鹽山",
+              "type": "景點",
+              "location": "七股區",
+              "duration": "1.5小時",
+              "cost": 50,
+              "note": "台灣最大鹽山，可爬上山頂",
+              "icon": "⛰️"
+            },
+            {
+              "time": "12:00",
+              "name": "七股海鮮",
+              "type": "美食",
+              "location": "七股區",
+              "duration": "1.5小時",
+              "cost": 500,
+              "note": "新鮮海產，蚵仔、蝦子必吃",
+              "icon": "🦐"
+            },
+            {
+              "time": "15:00",
+              "name": "夕遊出張所",
+              "type": "景點",
+              "location": "安平區",
+              "duration": "1小時",
+              "cost": 0,
+              "note": "彩色鹽巴、生日鹽，文創商品",
+              "icon": "🧂"
+            },
+            {
+              "time": "17:00",
+              "name": "新光三越採買伴手禮",
+              "type": "購物",
+              "location": "中西區",
+              "duration": "1.5小時",
+              "cost": 800,
+              "note": "椪餅、蝦餅、牛肉乾等台南名產",
+              "icon": "🎁"
+            }
+          ]
+        }
+      ],
+      "accommodation_suggestions": [
+        {
+          "name": "台南晶英酒店",
+          "type": "五星飯店",
+          "area": "中西區",
+          "price_range": "NT$ 3,500-6,000/晚",
+          "reason": "市中心地點，步行可達多數景點"
+        },
+        {
+          "name": "友愛街旅館",
+          "type": "平價旅館",
+          "area": "中西區",
+          "price_range": "NT$ 800-1,500/晚",
+          "reason": "背包客推薦，乾淨平價"
+        }
+      ],
+      "transport_tips": "台南景點分散，建議租機車（NT$ 300-400/日）或使用 Goshare。市區景點可步行或搭公車。",
+      "packing_list": [
+        "防曬用品（台南很曬）",
+        "舒適步鞋",
+        "空腹（美食太多）",
+        "大胃口",
+        "相機"
+      ],
+      "important_notes": [
+        "許多老店只營業早上或中午，下午會打烊",
+        "牛肉湯最好早上6-9點吃，最新鮮",
+        "花園夜市只有週四、六、日營業",
+        "租機車需要駕照",
+        "台南夏季炎熱，注意防曬補水"
+      ]
+    }
+  },
+  
+  "高雄": {
+    "2天": {
+      "trip_name": "高雄港都2日遊",
+      "location": "高雄",
+      "duration": 2,
+      "total_budget": 8000,
+      "budget_breakdown": {
+        "accommodation": 2000,
+        "food": 3000,
+        "transport": 1500,
+        "activities": 1500
+      },
+      "daily_itinerary": [
+        {
+          "day": 1,
+          "theme": "文創藝術之旅",
+          "activities": [
+            {
+              "time": "09:00",
+              "name": "駁二藝術特區",
+              "type": "景點",
+              "location": "鼓山區",
+              "duration": "2.5小時",
+              "cost": 0,
+              "note": "倉庫改造文創園區，假日有市集",
+              "icon": "🎨"
+            },
+            {
+              "time": "12:00",
+              "name": "旗津海鮮",
+              "type": "美食",
+              "location": "旗津區",
+              "duration": "1.5小時",
+              "cost": 600,
+              "note": "渡輪到旗津，新鮮海產",
+              "icon": "🦐"
+            },
+            {
+              "time": "14:00",
+              "name": "旗津海岸線",
+              "type": "景點",
+              "location": "旗津區",
+              "duration": "2小時",
+              "cost": 100,
+              "note": "租腳踏車遊海岸線，海風徐徐",
+              "icon": "🚴"
+            },
+            {
+              "time": "17:00",
+              "name": "美麗島站",
+              "type": "景點",
+              "location": "新興區",
+              "duration": "0.5小時",
+              "cost": 0,
+              "note": "世界最美地鐵站之一，光之穹頂",
+              "icon": "🚇"
+            },
+            {
+              "time": "19:00",
+              "name": "六合夜市",
+              "type": "美食",
+              "location": "新興區",
+              "duration": "2小時",
+              "cost": 400,
+              "note": "觀光客最愛夜市，海鮮攤多",
+              "icon": "🌙"
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "theme": "宗教文化與購物",
+          "activities": [
+            {
+              "time": "09:00",
+              "name": "蓮池潭",
+              "type": "景點",
+              "location": "左營區",
+              "duration": "2小時",
+              "cost": 0,
+              "note": "龍虎塔、春秋閣，拍照打卡聖地",
+              "icon": "🏯"
+            },
+            {
+              "time": "12:00",
+              "name": "左營眷村美食",
+              "type": "美食",
+              "location": "左營區",
+              "duration": "1小時",
+              "cost": 200,
+              "note": "牛肉麵、餃子等眷村料理",
+              "icon": "🍜"
+            },
+            {
+              "time": "14:00",
+              "name": "夢時代購物中心",
+              "type": "購物",
+              "location": "前鎮區",
+              "duration": "2.5小時",
+              "cost": 500,
+              "note": "大型購物中心，頂樓摩天輪",
+              "icon": "🛍️"
+            },
+            {
+              "time": "17:30",
+              "name": "瑞豐夜市",
+              "type": "美食",
+              "location": "左營區",
+              "duration": "2小時",
+              "cost": 350,
+              "note": "在地人推薦，週二三五六日營業",
+              "icon": "🌙"
+            }
+          ]
+        }
+      ],
+      "accommodation_suggestions": [
+        {
+          "name": "漢來大飯店",
+          "type": "五星飯店",
+          "area": "前金區",
+          "price_range": "NT$ 3,500-6,000/晚",
+          "reason": "高雄地標級飯店，港景房推薦"
+        },
+        {
+          "name": "康橋商旅",
+          "type": "商務旅館",
+          "area": "各區都有",
+          "price_range": "NT$ 1,500-2,500/晚",
+          "reason": "提供免費宵夜，CP值高"
+        }
+      ],
+      "transport_tips": "高雄捷運紅橘兩線，配合公車與輕軌。一日票NT$ 200。旗津搭渡輪，使用一卡通有優惠。",
+      "packing_list": [
+        "防曬用品",
+        "太陽眼鏡",
+        "一卡通",
+        "輕便服裝",
+        "泳裝（想玩水上活動）"
+      ],
+      "important_notes": [
+        "高雄天氣炎熱，注意防曬",
+        "瑞豐夜市週一、四公休",
+        "旗津渡輪班次密集，不用擔心",
+        "蓮池潭建議早上或傍晚前往",
+        "購物中心冷氣強，帶件薄外套"
+      ]
+    }
+  }
+}

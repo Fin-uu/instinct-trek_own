@@ -45,5 +45,17 @@ desktop.ini
 
 # Local environment files
 .env
-.env.*
+.env.local
+.env.*.local
 .envrc
+
+# But keep example files
+!.env.example
+
+# Test files with sensitive data
+test_model_api.py
+test_dual_model.py
+
+# Backup files
+*copy.py
+*.bak
