@@ -1,0 +1,126 @@
+錯誤: Expecting ',' delimiter: line 122 column 10 (char 2862)
+位置: line 122 column 10
+
+完整內容:
+{
+  "trip_name": "古都台南二日遊",
+  "location": "台南",
+  "duration": 2,
+  "total_budget": 15000,
+  "budget_breakdown": {
+    "accommodation": 5000,
+    "food": 5000,
+    "transport": 2000,
+    "activities": 3000
+  },
+  "daily_itinerary": [
+    {
+      "day": 1,
+      "theme": "古蹟巡禮與美食饗宴",
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "赤崁樓",
+          "type": "古蹟",
+          "location": "台南市中西區民族路二段212號",
+          "duration": "2小時",
+          "cost": 50,
+          "note": "台南代表性古蹟，了解歷史文化。",
+          "icon": "🏛️"
+        },
+        {
+          "time": "11:00",
+          "name": "祀典武廟",
+          "type": "古蹟",
+          "location": "台南市中西區永福路二段229號",
+          "duration": "1小時",
+          "cost": 0,
+          "note": "感受莊嚴肅穆的氛圍。",
+          "icon": "🙏"
+        },
+        {
+          "time": "12:00",
+          "name": "午餐：度小月擔仔麵",
+          "type": "美食",
+          "location": "台南市中西區中正路16號",
+          "duration": "1小時",
+          "cost": 300,
+          "note": "品嚐台南道地小吃。",
+          "icon": "🍜"
+        },
+        {
+          "time": "13:00",
+          "name": "安平古堡",
+          "type": "古蹟",
+          "location": "台南市安平區國勝路82號",
+          "duration": "2小時",
+          "cost": 75,
+          "note": "探索台灣歷史的起點。",
+          "icon": "🏰"
+        },
+        {
+          "time": "15:00",
+          "name": "安平樹屋",
+          "type": "景點",
+          "location": "台南市安平區古堡街108號",
+          "duration": "1.5小時",
+          "cost": 50,
+          "note": "獨特的樹屋建築，感受自然與歷史的結合。",
+          "icon": "🌳"
+        },
+        {
+          "time": "16:30",
+          "name": "安平老街",
+          "type": "商圈",
+          "location": "台南市安平區延平街",
+          "duration": "2小時",
+          "cost": 500,
+          "note": "購買伴手禮，品嚐蝦餅、蜜餞等。",
+          "icon": "🛍️"
+        },
+        {
+          "time": "18:30",
+          "name": "晚餐：周氏蝦捲",
+          "type": "美食",
+          "location": "台南市安平區安平路408-1號",
+          "duration": "1.5小時",
+          "cost": 400,
+          "note": "享用台南特色海鮮料理。",
+          "icon": "🍤"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "theme": "文創藝術與自然風光",
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "藍晒圖文創園區",
+          "type": "文創",
+          "location": "台南市南區西門路一段689巷",
+          "duration": "2小時",
+          "cost": 0,
+          "note": "欣賞藝術裝置，感受文創氛圍。",
+          "icon": "🎨"
+        },
+        {
+          "time": "11:00",
+          "name": "奇美博物館",
+          "type": "博物館",
+          "location": "台南市仁德區文華路二段66號",
+          "duration": "3小時",
+          "cost": 200,
+          "note": "欣賞豐富的藝術收藏。",
+          "icon": "🖼️"
+        },
+        {
+          "time": "14:00",
+          "name": "午餐：阿霞飯店",
+          "type": "美食",
+          "location": "台南市中西區忠義路二段84巷7號",
+          "duration": "1.5小時",
+          "cost": 800,
+          "note": "品嚐道地台菜。",
+          "icon": "🍽️"
+        }

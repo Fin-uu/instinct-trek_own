@@ -92,7 +92,7 @@ col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if st.button("💬 規劃行程", use_container_width=True, type="primary"):
-        st.switch_page("pages/chat.py")
+        st.switch_page("pages/Planning.py")
 
 with col2:
     if st.button("❓ 旅遊問答", use_container_width=True):

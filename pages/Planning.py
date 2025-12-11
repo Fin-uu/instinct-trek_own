@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # === 頁面設定 ===
 st.set_page_config(
-    page_title="💬 對話助手 - Instinct Trek",
+    page_title="💬 行程規劃 - Instinct Trek",
     page_icon="💬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -99,8 +99,11 @@ if "trips" not in st.session_state:
 if "collected_trip_info" not in st.session_state:
     st.session_state.collected_trip_info = {}
 
+if "waiting_for_dates" not in st.session_state:
+    st.session_state.waiting_for_dates = False
+
 # === 主標題 ===
-st.title("💬 對話助手")
+st.title("💬 行程規劃")
 st.caption("告訴我您的旅遊需求，讓 AI 為您規劃完美行程")
 
 # === 側邊欄 ===
@@ -126,8 +129,8 @@ with st.sidebar:
         st.success("✅ Gemini 已就緒")
         st.caption("負責行程生成")
     except Exception as e:
-        st.warning("⚠️ Gemini 配額已滿")
-        st.info("💡 將使用模板生成")
+        st.warning("⚠️ Gemini 配額已滿或無法連線")
+        st.info("💡 將使用精選模板生成行程\n（模板來自 data/trip_templates.json）")
     
     st.divider()
     
@@ -141,7 +144,7 @@ with st.sidebar:
     st.divider()
     
     # 統計資訊
-    st.subheader("📊 對話統計")
+    st.subheader("📊 規劃統計")
     col1, col2 = st.columns(2)
     with col1:
         st.metric("對話輪次", len(st.session_state.messages) // 2)
@@ -154,6 +157,7 @@ with st.sidebar:
     if st.button("🗑️ 清除對話", use_container_width=True):
         st.session_state.messages = []
         st.session_state.collected_trip_info = {}
+        st.session_state.waiting_for_dates = False
         st.rerun()
     
     if st.button("🗺️ 查看我的行程", use_container_width=True, type="primary"):
@@ -182,20 +186,167 @@ if len(st.session_state.messages) == 0:
 我不只是普通的旅遊問答機器人，更是您的：
 
 - 📋 **個人化行程規劃師**：告訴我喜好和預算，自動生成完美行程
-- 🔍 **即時應變專家**：監控天氣、人潮，主動提醒並調整計畫  
-- 🚨 **旅途守護者**：累了？不舒服？立即提供備案與協助
-
-**試試這些問題：**
-
-• 「幫我規劃三天兩夜的台北行程，預算一萬五」  
-• 「我想一個人去台東玩」  
-• 「台南有什麼必吃美食？」
-
 準備好開始您的旅程了嗎？✈️
 """)
 
+# === 日期選擇器（如果需要）===
+if st.session_state.waiting_for_dates:
+    st.markdown("### 📅 請選擇您的旅遊日期")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        start_date = st.date_input(
+            "出發日期",
+            value=datetime.now() + timedelta(days=7),
+            min_value=datetime.now().date(),
+            key="start_date_picker"
+        )
+    
+    with col2:
+        # 計算結束日期的最小值和預設值
+        min_end_date = start_date if start_date else datetime.now().date()
+        default_end_date = start_date + timedelta(days=2) if start_date else datetime.now() + timedelta(days=9)
+        
+        end_date = st.date_input(
+            "結束日期",
+            value=default_end_date,
+            min_value=min_end_date,
+            key="end_date_picker"
+        )
+    
+    if st.button("✅ 確認日期", type="primary", use_container_width=True):
+        # 計算天數
+        duration = (end_date - start_date).days + 1
+        
+        if duration < 1:
+            st.error("❌ 結束日期必須在出發日期之後")
+        else:
+            # 更新資訊
+            st.session_state.collected_trip_info["date"] = start_date.strftime("%Y-%m-%d")
+            st.session_state.collected_trip_info["duration"] = duration
+            st.session_state.waiting_for_dates = False
+            
+            # 新增訊息記錄
+            date_msg = f"我選擇 {start_date.strftime('%Y年%m月%d日')} 到 {end_date.strftime('%Y年%m月%d日')}（共 {duration} 天）"
+            st.session_state.messages.append({"role": "user", "content": date_msg})
+            
+            # === 關鍵修復：檢查資訊是否完整並觸發生成 ===
+            if TripInfoCollector.is_info_complete(st.session_state.collected_trip_info):
+                # 添加一個標記，表示需要生成行程
+                st.session_state.trigger_generation = True
+            
+            st.rerun()
+
+# === 檢查是否需要自動生成行程（日期確認後）===
+if st.session_state.get('trigger_generation', False):
+    st.session_state.trigger_generation = False  # 重置標記
+    
+    with st.chat_message("assistant"):
+        info = st.session_state.collected_trip_info
+        
+        st.markdown(f"""
+### 🎯 太好了！立即為您規劃 {info['location']} 的完美旅程！
+
+{TripInfoCollector.format_collected_info(info)}
+""")
+        
+        # === 直接生成行程 ===
+        with st.spinner("🤖 AI 正在為您精心規劃..."):
+            import time
+            
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+            
+            status_text.text("🔍 分析目的地特色...")
+            progress_bar.progress(20)
+            time.sleep(0.3)
+            
+            status_text.text("🗺️ 規劃景點路線...")
+            progress_bar.progress(50)
+            time.sleep(0.3)
+            
+            status_text.text("🍜 搜尋美食推薦...")
+            progress_bar.progress(75)
+            time.sleep(0.3)
+            
+            status_text.text("✨ 最後優化...")
+            progress_bar.progress(90)
+            
+            # 實際生成
+            result = ItineraryGenerator.generate_itinerary(
+                client=gemini_client,
+                location=info.get('location', '台灣'),
+                duration=info.get('duration', 3),
+                budget=info.get('budget'),
+                preferences=info.get('preferences')
+            )
+            
+            if result["success"]:
+                itinerary_data = result["data"]
+                generation_method = "✨ AI 智能生成"
+            else:
+                itinerary_data = result["fallback"]
+                generation_method = "📋 使用高品質模板"
+            
+            status_text.text("✅ 完成！")
+            progress_bar.progress(100)
+            time.sleep(0.5)
+            
+            # 清除進度條
+            progress_bar.empty()
+            status_text.empty()
+            
+            # 轉換格式並儲存
+            new_trip = ItineraryGenerator.convert_to_trip_format(itinerary_data)
+            st.session_state.trips.append(new_trip)
+            
+            # 清除收集的資訊
+            st.session_state.collected_trip_info = {}
+            
+            # 成功訊息
+            st.success(f"✅ 行程「{new_trip['name']}」已生成並加入我的行程！")
+            st.toast(f"🎉 {new_trip['name']} 生成成功", icon="✅")
+            
+            # 簡化預覽
+            with st.expander("📋 查看行程摘要", expanded=True):
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("目的地", new_trip['location'])
+                with col2:
+                    st.metric("天數", f"{new_trip['days']}天")
+                with col3:
+                    st.metric("預算", f"NT$ {new_trip['budget']:,}")
+                
+                st.divider()
+                
+                st.markdown("### 📅 行程亮點")
+                for day in new_trip['itinerary'][:2]:
+                    st.markdown(f"**Day {day['day']}** - {day.get('theme', day['date'])}")
+                    for activity in day['activities'][:3]:
+                        st.markdown(f"• {activity.get('icon', '📍')} {activity.get('name')}")
+                
+                if len(new_trip['itinerary']) > 2:
+                    st.caption(f"...還有更多精彩內容")
+                
+                st.divider()
+                
+                # 跳轉按鈕
+                st.markdown("### 🎯 查看完整行程")
+                col_a, col_b, col_c = st.columns([1, 2, 1])
+                with col_b:
+                    if st.button("🗺️ 前往我的行程", use_container_width=True, type="primary", key="goto_mytrip"):
+                        st.switch_page("pages/Mytrip.py")
+            
+            response_text = f"✅ 已為您生成「{new_trip['name']}」行程！點擊上方按鈕或側邊欄查看完整內容。"
+            
+            # 儲存回應
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": response_text
+            })
+
 # === 用戶輸入處理 ===
-if prompt := st.chat_input("輸入你的需求... 例如：我想去台中玩"):
+if prompt := st.chat_input("輸入你的需求... 例如：我想去台中玩", disabled=st.session_state.waiting_for_dates):
     # 顯示用戶訊息
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -203,12 +354,35 @@ if prompt := st.chat_input("輸入你的需求... 例如：我想去台中玩"):
     
     # === 處理回應 ===
     with st.chat_message("assistant"):
-        # 提取資訊
-        extracted = TripInfoCollector.extract_info_from_message(prompt)
-        st.session_state.collected_trip_info = TripInfoCollector.merge_info(
-            st.session_state.collected_trip_info,
-            extracted
-        )
+        # ✅ 使用混合提取（規則優先 + LLM 輔助）
+        try:
+            extracted = TripInfoCollector.extract_info_from_message(
+                prompt,
+                vllm_client=vllm_client  # 傳入 vLLM client
+            )
+            
+            # 合併提取到的資訊
+            st.session_state.collected_trip_info = TripInfoCollector.merge_info(
+                st.session_state.collected_trip_info,
+                extracted
+            )
+            
+            # 顯示提取日誌（調試用）
+            with st.expander("🔍 AI 分析日誌", expanded=False):
+                st.json({
+                    "提取方法": "規則 + LLM 混合",
+                    "提取結果": extracted,
+                    "已收集資訊": st.session_state.collected_trip_info
+                })
+            
+        except Exception as e:
+            st.warning(f"⚠️ 智能提取失敗，使用純規則方案: {str(e)}")
+            # 備用：純規則提取
+            extracted = TripInfoCollector.extract_info_from_message(prompt, vllm_client=None)
+            st.session_state.collected_trip_info = TripInfoCollector.merge_info(
+                st.session_state.collected_trip_info,
+                extracted
+            )
         
         # 顯示已收集資訊
         if st.session_state.collected_trip_info:
@@ -293,7 +467,8 @@ if prompt := st.chat_input("輸入你的需求... 例如：我想去台中玩"):
                     with col2:
                         st.metric("天數", f"{new_trip['days']}天")
                     with col3:
-                        st.metric("預算", f"NT$ {new_trip['budget']:,}")
+                        budget_formatted = f"NT$ {new_trip['budget']:,}" if isinstance(new_trip['budget'], (int, float)) else f"NT$ {new_trip['budget']}"
+                        st.metric("預算", budget_formatted)
                     
                     st.divider()
                     
@@ -308,21 +483,34 @@ if prompt := st.chat_input("輸入你的需求... 例如：我想去台中玩"):
                     
                     st.divider()
                     
-                    if st.button("🗺️ 前往我的行程查看完整內容", type="primary", use_container_width=True):
-                        st.switch_page("pages/Mytrip.py")
+                    # 自動跳轉按鈕
+                    st.markdown("### 🎯 查看完整行程")
+                    col_a, col_b, col_c = st.columns([1, 2, 1])
+                    with col_b:
+                        if st.button("🗺️ 前往我的行程", use_container_width=True, type="primary"):
+                            st.switch_page("pages/Mytrip.py")
+                
+                # 3 秒後自動跳轉
+                import time
+                time.sleep(2)
+                st.info("🔄 即將自動跳轉到我的行程頁面...")
+                time.sleep(1)
+                st.switch_page("pages/Mytrip.py")
             
-            response_text = f"✅ 已為您生成「{new_trip['name']}」行程！"
+            response_text = f"✅ 已為您生成「{new_trip['name']}」行程！點擊上方按鈕或側邊欄查看完整內容。"
         
         else:
-            # 資訊不完整，繼續追問
+            # 資訊不完整，生成追問
             missing_fields = TripInfoCollector.get_missing_fields(
                 st.session_state.collected_trip_info
             )
             
+            # ✅ 追問也可以用 LLM（可選）
             response_text = TripInfoCollector.generate_follow_up_question(
                 missing_fields,
                 st.session_state.collected_trip_info,
-                client=None  # 使用規則生成問題
+                client=vllm_client  # 傳入 client 讓追問更自然
+                # client=None  # 或不傳，使用規則追問
             )
             
             st.markdown(response_text)

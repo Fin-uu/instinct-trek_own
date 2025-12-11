@@ -142,7 +142,7 @@ with st.sidebar:
         st.rerun()
     
     if st.button("🗺️ 規劃行程", use_container_width=True, type="primary"):
-        st.switch_page("pages/chat.py")
+        st.switch_page("pages/Planning.py")
 
 # === 顯示歷史訊息 ===
 for message in st.session_state.qa_messages:
@@ -233,7 +233,7 @@ if prompt := st.chat_input("輸入你的問題... 例如：台北101值得去嗎
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("💬 繼續規劃行程", use_container_width=True):
-                    st.switch_page("pages/chat.py")
+                    st.switch_page("pages/Planning.py")
             with col2:
                 if st.button("🗺️ 查看我的行程", use_container_width=True):
                     st.switch_page("pages/Mytrip.py")

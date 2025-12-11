@@ -132,11 +132,11 @@ with st.sidebar:
     # 快速操作
     st.subheader("⚡ 快速操作")
     
-    if st.button("💬 返回對話助手", use_container_width=True):
-        st.switch_page("pages/chat.py")
+    if st.button("💬 返回行程規劃", use_container_width=True):
+        st.switch_page("pages/Planning.py")
     
-    if st.button("⚡ 查看即時提醒", use_container_width=True):
-        st.switch_page("pages/Alerts.py")
+    if st.button("📍 查看行程追蹤", use_container_width=True):
+        st.switch_page("pages/Tracking.py")
     
     st.divider()
     
@@ -170,6 +170,19 @@ def calculate_budget_usage(trip):
     """計算預算使用率"""
     spent = trip.get('spent', 0)
     budget = trip.get('budget', 1)
+    
+    # 確保 spent 和 budget 是數字
+    if isinstance(spent, str):
+        try:
+            spent = float(spent)
+        except:
+            spent = 0
+    if isinstance(budget, str):
+        try:
+            budget = float(budget)
+        except:
+            budget = 1
+    
     return (spent / budget * 100) if budget > 0 else 0
 
 def create_budget_chart(trip):
@@ -229,8 +242,8 @@ if not st.session_state.trips:
         </div>
         """, unsafe_allow_html=True)
         
-        if st.button("💬 前往對話助手", type="primary", use_container_width=True):
-            st.switch_page("pages/chat.py")
+        if st.button("💬 前往行程規劃", type="primary", use_container_width=True):
+            st.switch_page("pages/Planning.py")
 
 else:
     # === 顯示行程數量 ===
@@ -267,9 +280,11 @@ else:
                 """)
             
             with col4:
+                budget_value = trip['budget']
+                budget_display = f"NT$ {budget_value:,}" if isinstance(budget_value, (int, float)) else f"NT$ {budget_value}"
                 st.markdown(f"""
                 **💰 預算**  
-                NT$ {trip['budget']:,}
+                {budget_display}
                 """)
             
             # === 狀態標籤 ===
@@ -309,9 +324,9 @@ else:
                             location = activity.get('location', '')
                             note = activity.get('note', '')
                             
-                            st.markdown(f"{icon} **{name}**")
+                            st.markdown(f"<span style='font-size: 1.2rem; font-weight: 700; color: #ffffff;'>{icon} {name}</span>", unsafe_allow_html=True)
                             if location:
-                                st.caption(f"📍 {location}")
+                                st.markdown(f"<span style='color: #667eea; font-weight: 600; font-size: 0.95rem;'>📍 {location}</span>", unsafe_allow_html=True)
                             if note:
                                 st.info(note)
                         
@@ -338,15 +353,15 @@ else:
                     st.markdown("### 🚗 交通建議")
                     st.info(trip['transport_tips'])
                 
-                if trip.get('packing_list'):
-                    st.divider()
-                    st.markdown("### 🎒 打包清單")
-                    items_per_row = 3
-                    for i in range(0, len(trip['packing_list']), items_per_row):
-                        cols = st.columns(items_per_row)
-                        for j, col in enumerate(cols):
-                            if i + j < len(trip['packing_list']):
-                                col.checkbox(trip['packing_list'][i + j], key=f"pack_{idx}_{i+j}")
+                # if trip.get('packing_list'):
+                #     st.divider()
+                #     st.markdown("### 🎒 打包清單")
+                #     items_per_row = 3
+                #     for i in range(0, len(trip['packing_list']), items_per_row):
+                #         cols = st.columns(items_per_row)
+                #         for j, col in enumerate(cols):
+                #             if i + j < len(trip['packing_list']):
+                #                 col.checkbox(trip['packing_list'][i + j], key=f"pack_{idx}_{i+j}")
                 
                 if trip.get('important_notes'):
                     st.divider()
@@ -361,24 +376,30 @@ else:
                 col1, col2, col3 = st.columns(3)
                 
                 with col1:
+                    budget_val = trip['budget']
+                    budget_str = f"NT$ {budget_val:,}" if isinstance(budget_val, (int, float)) else f"NT$ {budget_val}"
                     st.metric(
                         "總預算",
-                        f"NT$ {trip['budget']:,}",
+                        budget_str,
                     )
                 
                 with col2:
                     spent = trip.get('spent', 0)
+                    spent_str = f"NT$ {spent:,}" if isinstance(spent, (int, float)) else f"NT$ {spent}"
                     st.metric(
                         "已花費",
-                        f"NT$ {spent:,}",
+                        spent_str,
                         delta=f"{calculate_budget_usage(trip):.1f}%"
                     )
                 
                 with col3:
-                    remaining = trip['budget'] - trip.get('spent', 0)
+                    budget_val = trip['budget'] if isinstance(trip['budget'], (int, float)) else 0
+                    spent_val = trip.get('spent', 0) if isinstance(trip.get('spent', 0), (int, float)) else 0
+                    remaining = budget_val - spent_val
+                    remaining_str = f"NT$ {remaining:,}" if isinstance(remaining, (int, float)) else f"NT$ {remaining}"
                     st.metric(
                         "剩餘",
-                        f"NT$ {remaining:,}"
+                        remaining_str
                     )
                 
                 # 預算圖表
@@ -393,8 +414,10 @@ else:
                     
                     breakdown = trip['budget_breakdown']
                     for category, amount in breakdown.items():
-                        percentage = (amount / trip['budget'] * 100) if trip['budget'] > 0 else 0
-                        st.markdown(f"**{category}**: NT$ {amount:,} ({percentage:.1f}%)")
+                        budget_val = trip['budget'] if isinstance(trip['budget'], (int, float)) else 1
+                        percentage = (amount / budget_val * 100) if budget_val > 0 else 0
+                        amount_str = f"{amount:,}" if isinstance(amount, (int, float)) else str(amount)
+                        st.markdown(f"**{category}**: NT$ {amount_str} ({percentage:.1f}%)")
                         st.progress(percentage / 100)
                 
                 # 新增花費
@@ -418,7 +441,8 @@ else:
                     if st.form_submit_button("💾 記錄", use_container_width=True):
                         if expense_amount > 0:
                             trip['spent'] = trip.get('spent', 0) + expense_amount
-                            st.success(f"✅ 已記錄花費 NT$ {expense_amount:,}")
+                            amount_str = f"{expense_amount:,}" if isinstance(expense_amount, (int, float)) else str(expense_amount)
+                            st.success(f"✅ 已記錄花費 NT$ {amount_str}")
                             st.rerun()
                         else:
                             st.error("請輸入有效金額")
@@ -441,10 +465,17 @@ else:
                             ["計劃中", "進行中", "已完成"],
                             index=["計劃中", "進行中", "已完成"].index(trip.get('status', '計劃中'))
                         )
+                        # 確保 budget 是數字類型
+                        budget_value = trip['budget']
+                        if isinstance(budget_value, str):
+                            try:
+                                budget_value = int(budget_value)
+                            except:
+                                budget_value = 0
                         new_budget = st.number_input(
                             "預算 (NT$)",
                             min_value=0,
-                            value=trip['budget'],
+                            value=budget_value,
                             step=1000
                         )
                     
@@ -534,26 +565,26 @@ else:
                 col1, col2, col3 = st.columns([1, 1, 1])
                 
                 with col2:
-                    if st.button("🗑️ 確認刪除", use_container_width=True, type="primary", key=f"delete_trip_{idx}"):
+                    if st.button("🗑️ 確認刪除", use_container_width=True, type="primary", key=f"delete_confirm_{idx}"):
                         st.session_state.trips.remove(trip)
                         st.success("✅ 行程已刪除")
                         st.rerun()
 
 st.divider()
 
-# === 快速操作按鈕 ===
-st.markdown("### ⚡ 快速操作")
+# # === 快速操作按鈕 ===
+# st.markdown("### ⚡ 快速操作")
 
-col1, col2, col3 = st.columns(3)
+# col1, col2, col3 = st.columns(3)
 
-with col1:
-    if st.button("💬 規劃新行程", use_container_width=True, type="primary"):
-        st.switch_page("pages/chat.py")
+# with col1:
+#     if st.button("💬 規劃新行程", use_container_width=True, type="primary"):
+#         st.switch_page("pages/1_Chat.py")
 
-with col2:
-    if st.button("⚡ 查看即時提醒", use_container_width=True):
-        st.switch_page("pages/Alerts.py")
+# with col2:
+#     if st.button("⚡ 查看即時提醒", use_container_width=True):
+#         st.switch_page("pages/3_Alerts.py")
 
-with col3:
-    if st.button("🔄 重新整理", use_container_width=True):
-        st.rerun()
+# with col3:
+#     if st.button("🔄 重新整理", use_container_width=True):
+#         st.rerun()
