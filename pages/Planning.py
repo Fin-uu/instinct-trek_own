@@ -60,18 +60,25 @@ MODEL_CONFIG = {
 }
 
 # === 初始化雙 Client ===
+def get_env(key, default=None):
+    """優先使用 st.secrets，否則使用環境變數"""
+    try:
+        return st.secrets.get(key, os.getenv(key, default))
+    except:
+        return os.getenv(key, default)
+
 @st.cache_resource
 def init_vllm_client():
     """初始化本地 vLLM（用於資訊收集）"""
     return OpenAI(
-        base_url=os.getenv("VLLM_BASE_URL"),
-        api_key=os.getenv("VLLM_API_KEY")
+        base_url=get_env("VLLM_BASE_URL"),
+        api_key=get_env("VLLM_API_KEY")
     )
 
 @st.cache_resource
 def init_gemini_client():
     """初始化 Gemini（用於行程生成）"""
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = get_env("GEMINI_API_KEY")
     genai.configure(api_key=api_key)
     return genai.GenerativeModel(MODEL_CONFIG["gemini"])
 
