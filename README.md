@@ -44,13 +44,3 @@
 | **雲端模型** | **Google Gemini 2.0-flash** | 行程生成 (JSON) | • **配置**：Temperature 設為 `0.6` 以提高穩定性；每日 800 tokens 限制。<br>• **容錯**：當 API 呼叫失敗時，自動降級使用 `trip_templates.json` 模板。 |
 
 ---
-
-## 🛠️ 安裝與執行 (Installation)
-
-1. **Clone 專案**
-   ```bash
-   git clone [https://github.com/your-username/instinct-trek.git](https://github.com/your-username/instinct-trek.git)
-   cd instinct-trek# instinct-trek
-
-Minimal skeleton after cleanup.
-
