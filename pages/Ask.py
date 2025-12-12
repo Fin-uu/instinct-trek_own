@@ -78,71 +78,71 @@ st.title("❓ 旅遊問答助手")
 st.caption("詢問任何與台灣旅遊相關的問題，AI 隨時為您解答")
 
 # === 側邊欄 ===
-with st.sidebar:
-    st.header("💡 常見問題")
+# with st.sidebar:
+#     st.header("💡 常見問題")
     
-    st.markdown("### 🗺️ 景點相關")
-    if st.button("台北有哪些必去景點？", use_container_width=True):
-        st.session_state.qa_messages.append({
-            "role": "user",
-            "content": "台北有哪些必去景點？"
-        })
-        st.rerun()
+#     st.markdown("### 🗺️ 景點相關")
+#     if st.button("台北有哪些必去景點？", use_container_width=True):
+#         st.session_state.qa_messages.append({
+#             "role": "user",
+#             "content": "台北有哪些必去景點？"
+#         })
+#         st.rerun()
     
-    if st.button("台南的古蹟景點推薦？", use_container_width=True):
-        st.session_state.qa_messages.append({
-            "role": "user",
-            "content": "台南有哪些值得參觀的古蹟？"
-        })
-        st.rerun()
+#     if st.button("台南的古蹟景點推薦？", use_container_width=True):
+#         st.session_state.qa_messages.append({
+#             "role": "user",
+#             "content": "台南有哪些值得參觀的古蹟？"
+#         })
+#         st.rerun()
     
-    st.divider()
+#     st.divider()
     
-    st.markdown("### 🍜 美食相關")
-    if st.button("台中必吃美食有哪些？", use_container_width=True):
-        st.session_state.qa_messages.append({
-            "role": "user",
-            "content": "台中有什麼必吃的美食？"
-        })
-        st.rerun()
+#     st.markdown("### 🍜 美食相關")
+#     if st.button("台中必吃美食有哪些？", use_container_width=True):
+#         st.session_state.qa_messages.append({
+#             "role": "user",
+#             "content": "台中有什麼必吃的美食？"
+#         })
+#         st.rerun()
     
-    if st.button("夜市美食推薦？", use_container_width=True):
-        st.session_state.qa_messages.append({
-            "role": "user",
-            "content": "台灣有哪些著名的夜市？推薦必吃的美食？"
-        })
-        st.rerun()
+#     if st.button("夜市美食推薦？", use_container_width=True):
+#         st.session_state.qa_messages.append({
+#             "role": "user",
+#             "content": "台灣有哪些著名的夜市？推薦必吃的美食？"
+#         })
+#         st.rerun()
     
-    st.divider()
+#     st.divider()
     
-    st.markdown("### 🚗 交通相關")
-    if st.button("如何從台北到花蓮？", use_container_width=True):
-        st.session_state.qa_messages.append({
-            "role": "user",
-            "content": "從台北到花蓮有哪些交通方式？"
-        })
-        st.rerun()
+#     st.markdown("### 🚗 交通相關")
+#     if st.button("如何從台北到花蓮？", use_container_width=True):
+#         st.session_state.qa_messages.append({
+#             "role": "user",
+#             "content": "從台北到花蓮有哪些交通方式？"
+#         })
+#         st.rerun()
     
-    if st.button("台灣租車建議？", use_container_width=True):
-        st.session_state.qa_messages.append({
-            "role": "user",
-            "content": "在台灣租車旅遊有什麼需要注意的？"
-        })
-        st.rerun()
+#     if st.button("台灣租車建議？", use_container_width=True):
+#         st.session_state.qa_messages.append({
+#             "role": "user",
+#             "content": "在台灣租車旅遊有什麼需要注意的？"
+#         })
+#         st.rerun()
     
-    st.divider()
+#     st.divider()
     
-    st.markdown("### 📊 統計")
-    st.metric("提問次數", len(st.session_state.qa_messages) // 2)
+#     st.markdown("### 📊 統計")
+#     st.metric("提問次數", len(st.session_state.qa_messages) // 2)
     
-    st.divider()
+#     st.divider()
     
-    if st.button("🗑️ 清除對話", use_container_width=True):
-        st.session_state.qa_messages = []
-        st.rerun()
+#     if st.button("🗑️ 清除對話", use_container_width=True):
+#         st.session_state.qa_messages = []
+#         st.rerun()
     
-    if st.button("🗺️ 規劃行程", use_container_width=True, type="primary"):
-        st.switch_page("pages/Planning.py")
+#     if st.button("🗺️ 規劃行程", use_container_width=True, type="primary"):
+#         st.switch_page("pages/Planning.py")
 
 # === 顯示歷史訊息 ===
 for message in st.session_state.qa_messages:
@@ -170,7 +170,6 @@ if len(st.session_state.qa_messages) == 0:
 • 「墾丁適合幾月去？」  
 • 「日月潭周邊有哪些景點？」
 
-有任何問題都可以問我！🌟
 """)
 
 # === AI 回答函數 ===

@@ -305,17 +305,17 @@ show_traffic = False
 remind_before = 30
 auto_navigate = False
 
-# === 側邊欄：統計資訊 ===
-with st.sidebar:
-    st.markdown("## 📊 追蹤設定")
+# # === 側邊欄：統計資訊 ===
+# with st.sidebar:
+#     st.markdown("## 📊 追蹤設定")
     
-    st.markdown("---")
+#     st.markdown("---")
     
-    # 統計資訊
-    st.markdown("### 📈 今日統計")
-    st.metric("已完成", "3 個活動")
-    st.metric("剩餘", "5 個活動")
-    st.metric("行程進度", "38%")
+#     # 統計資訊
+#     st.markdown("### 📈 今日統計")
+#     st.metric("已完成", "3 個活動")
+#     st.metric("剩餘", "5 個活動")
+#     st.metric("行程進度", "38%")
 
 # === 標題區域 ===
 st.markdown("""
@@ -338,7 +338,7 @@ if "trips" not in st.session_state or len(st.session_state.trips) == 0:
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
         if st.button("前往對話助手", type="primary", use_container_width=True):
-            st.switch_page("pages/1_Chat.py")
+            st.switch_page("pages/Planning.py")
     
     st.stop()
 
